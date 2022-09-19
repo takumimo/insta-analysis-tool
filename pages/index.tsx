@@ -17,7 +17,7 @@ import {
   Title,
 } from "chart.js";
 import { Doughnut, Line } from "react-chartjs-2";
-import faker from 'faker';
+import { faker } from "@faker-js/faker";
 
 const Home: NextPage = () => {
   ChartJS.register(
@@ -33,8 +33,16 @@ const Home: NextPage = () => {
 
   const followerUrl = `https://graph.facebook.com/v14.0/${user_id}?fields=business_discovery.username(${user_name}){followers_count,media_count,follows_count}&access_token=${access_token}`;
   const genderUrl = `https://graph.facebook.com/v14.0/${user_id}/insights?access_token=${access_token}&metric=audience_gender_age&period=lifetime`;
+  const profile_views = `https://graph.facebook.com/v14.0/${user_id}/insights?access_token=${access_token}&metric=profile_views&period=day&since=Aug 10 10:10:00 JST 2022&until=Sep 9 10:10:00 JST 2022`;
   const [female, setFemaile] = useState();
   const [male, setMale] = useState();
+  const [views, setViews] = useState([]);
+
+  useEffect(() => {
+    fetchProfileViews();
+    fetchGender();
+    // console.log();
+  }, []);
 
   const data = {
     labels: ["女性", "男性"],
@@ -49,6 +57,29 @@ const Home: NextPage = () => {
     ],
   };
 
+  // const testdata = [
+  //   {
+  //     end_time: "2022-09-11",
+  //     value: "こんちは",
+  //   },
+  //   {
+  //     end_time: "2022-09-12",
+  //     value: "どうもです",
+  //   },
+  //   {
+  //     end_time: "2022-09-13",
+  //     value: "わかちこ",
+  //   },
+  //   {
+  //     end_time: "2022-09-14",
+  //     value: "ギャル",
+  //   },
+  // ];
+
+  // testdata.map(v => console.log(v.end_time));
+
+  // console.log(testdata);
+
   const options = {
     responsive: true,
     plugins: {
@@ -62,6 +93,14 @@ const Home: NextPage = () => {
     },
   };
 
+  const fetchProfileViews = async () => {
+    const objData = await axios.get(profile_views);
+    const objArray = objData.data.data[0].values;
+    setViews(objArray);
+    // const b = objArray.map((v) => v.end_time);
+    // b.map(v => console.log(v));
+  };
+
   const labels = [
     "January",
     "February",
@@ -72,32 +111,17 @@ const Home: NextPage = () => {
     "July",
   ];
 
-  const data2 = {
+  const follwer = {
     labels,
     datasets: [
       {
         label: "Dataset 1",
-        data: labels.map(() =>
-          faker.datatype.number({ min: -1000, max: 1000 })
-        ),
+        data: [33, 53, 85, 41, 44, 65],
         borderColor: "rgb(255, 99, 132)",
         backgroundColor: "rgba(255, 99, 132, 0.5)",
       },
-      {
-        label: "Dataset 2",
-        data: labels.map(() =>
-          faker.datatype.number({ min: -1000, max: 1000 })
-        ),
-        borderColor: "rgb(53, 162, 235)",
-        backgroundColor: "rgba(53, 162, 235, 0.5)",
-      },
     ],
   };
-
-  useEffect(() => {
-    const b = fetchGender();
-    console.log(b);
-  }, [male, female]);
 
   const fetchGender = async () => {
     const returnData = await axios.get(genderUrl);
@@ -123,22 +147,23 @@ const Home: NextPage = () => {
     const maleAllB = allB.reduce(reducerB);
     setMale(maleAllB); //男性の合計人数
   };
+
   return (
     <>
-      <Head>
-        <title>Insta_analysis_tool</title>
-        <meta name="description" content="簡易的なインスタ分析ツールです" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-      <div className="">
-        <p>フォロワー男女比</p>
-        <div className="text-3xl w-96 h-96">
-          <Doughnut data={data}></Doughnut>
+        <Head>
+          <title>Insta_analysis_tool</title>
+          <meta name="description" content="簡易的なインスタ分析ツールです" />
+          <link rel="icon" href="/favicon.ico" />
+        </Head>
+        <div className="">
+          <p>フォロワー男女比</p>
+          <div className="text-3xl w-96 h-96">
+            <Doughnut data={data}></Doughnut>
+          </div>
+          {/* <div className="text-3xl w-full h-96">
+            <Line options={options} data={follwer} />
+          </div> */}
         </div>
-        <div>
-          <Line options={options} data={data2} />
-        </div>
-      </div>
     </>
   );
 };
