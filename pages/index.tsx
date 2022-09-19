@@ -18,6 +18,7 @@ import {
 } from "chart.js";
 import { Doughnut, Line } from "react-chartjs-2";
 import { faker } from "@faker-js/faker";
+import Layout from "../components/Layout";
 
 const Home: NextPage = () => {
   ChartJS.register(
@@ -150,6 +151,7 @@ const Home: NextPage = () => {
 
   return (
     <>
+      <Layout>
         <Head>
           <title>Insta_analysis_tool</title>
           <meta name="description" content="簡易的なインスタ分析ツールです" />
@@ -164,6 +166,7 @@ const Home: NextPage = () => {
             <Line options={options} data={follwer} />
           </div> */}
         </div>
+      </Layout>
     </>
   );
 };
