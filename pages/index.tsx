@@ -17,7 +17,6 @@ import {
   Title,
 } from "chart.js";
 import { Doughnut, Line } from "react-chartjs-2";
-import { faker } from "@faker-js/faker";
 import Layout from "../components/Layout";
 
 const Home: NextPage = () => {
@@ -42,7 +41,6 @@ const Home: NextPage = () => {
   useEffect(() => {
     fetchProfileViews();
     fetchGender();
-    // console.log();
   }, []);
 
   const data = {
@@ -57,29 +55,6 @@ const Home: NextPage = () => {
       },
     ],
   };
-
-  // const testdata = [
-  //   {
-  //     end_time: "2022-09-11",
-  //     value: "こんちは",
-  //   },
-  //   {
-  //     end_time: "2022-09-12",
-  //     value: "どうもです",
-  //   },
-  //   {
-  //     end_time: "2022-09-13",
-  //     value: "わかちこ",
-  //   },
-  //   {
-  //     end_time: "2022-09-14",
-  //     value: "ギャル",
-  //   },
-  // ];
-
-  // testdata.map(v => console.log(v.end_time));
-
-  // console.log(testdata);
 
   const options = {
     responsive: true,
@@ -97,27 +72,20 @@ const Home: NextPage = () => {
   const fetchProfileViews = async () => {
     const objData = await axios.get(profile_views);
     const objArray = objData.data.data[0].values;
+    console.log(objArray);
     setViews(objArray);
-    // const b = objArray.map((v) => v.end_time);
-    // b.map(v => console.log(v));
   };
 
-  const labels = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-  ];
+  const labels = views.map((v) => v.end_time);
+
+  const viewData = views.map((v) => v.value);
 
   const follwer = {
-    labels,
+    labels: labels,
     datasets: [
       {
         label: "Dataset 1",
-        data: [33, 53, 85, 41, 44, 65],
+        data: viewData,
         borderColor: "rgb(255, 99, 132)",
         backgroundColor: "rgba(255, 99, 132, 0.5)",
       },
@@ -125,13 +93,12 @@ const Home: NextPage = () => {
   };
 
   const fetchGender = async () => {
+    //リファクタする
     const returnData = await axios.get(genderUrl);
     const a = returnData.data.data[0].values[0].value;
     const array = Object.keys(a).map((k) => ({ key: k, value: a[k] }));
     const regexp = /F/g;
     const check = array.filter((v) => v.key.match(regexp));
-    // const b = Object.keys(a).filter((v) => v.match("F"));
-    // const c = a.filter(v => v.keys == b)
     const all = check.map((v) => v.value);
     const reducer = (sum, currentValue) => sum + currentValue;
     const FemaleAll = all.reduce(reducer);
@@ -141,8 +108,6 @@ const Home: NextPage = () => {
     const arrayB = Object.keys(a).map((k) => ({ key: k, value: b[k] }));
     const regexpB = /M/g;
     const checkB = arrayB.filter((v) => v.key.match(regexpB));
-    // const b = Object.keys(a).filter((v) => v.match("F"));
-    // const c = a.filter(v => v.keys == b)
     const allB = checkB.map((v) => v.value);
     const reducerB = (sumB, currentValueB) => sumB + currentValueB;
     const maleAllB = allB.reduce(reducerB);
@@ -162,9 +127,9 @@ const Home: NextPage = () => {
           <div className="text-3xl w-96 h-96">
             <Doughnut data={data}></Doughnut>
           </div>
-          {/* <div className="text-3xl w-full h-96">
+          <div className="text-3xl w-full h-96">
             <Line options={options} data={follwer} />
-          </div> */}
+          </div>
         </div>
       </Layout>
     </>
