@@ -18,6 +18,7 @@ import {
 } from "chart.js";
 import { Doughnut, Line } from "react-chartjs-2";
 import Layout from "../components/Layout";
+import { ScrollArea } from "@mantine/core";
 
 const Home: NextPage = () => {
   ChartJS.register(
@@ -122,15 +123,17 @@ const Home: NextPage = () => {
           <meta name="description" content="簡易的なインスタ分析ツールです" />
           <link rel="icon" href="/favicon.ico" />
         </Head>
-        <div className="">
-          <p>フォロワー男女比</p>
-          <div className="text-3xl w-96 h-96">
-            <Doughnut data={data}></Doughnut>
+        <ScrollArea style={{ height: "100%" }}>
+          <div className="">
+            <p>フォロワー男女比</p>
+            <div className="text-3xl w-96 h-96">
+              <Doughnut data={data}></Doughnut>
+            </div>
+            <div className="text-3xl w-full h-96">
+              <Line options={options} data={follwer} />
+            </div>
           </div>
-          <div className="text-3xl w-full h-96">
-            <Line options={options} data={follwer} />
-          </div>
-        </div>
+        </ScrollArea>
       </Layout>
     </>
   );
